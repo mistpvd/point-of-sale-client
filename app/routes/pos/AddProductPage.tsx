@@ -2,12 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface Dimensions {
-    length: number;
-    width: number;
-    height: number;
-}
-
 const AddProductPage: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -15,63 +9,37 @@ const AddProductPage: React.FC = () => {
         sku: '',
         barcode: '',
         category: '',
-        price: 0,
-        description: '',
-        isActive: true,
-        image: '',
-        dimensions: {
-            length: 0,
-            width: 0,
-            height: 0
-        }
+        uom: 'pcs',
+        initialStock: 0,
+        costPrice: 0,
+        sellingPrice: 0,
+        supplier: '',
+        description: ''
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
 
         try {
-            // Prepare data according to backend schema
-            const productData = {
-                name: formData.name,
-                sku: formData.sku,
-                barcode: formData.barcode,
-                category: formData.category,
-                price: parseFloat(formData.price.toString()),
-                description: formData.description,
-                isActive: formData.isActive,
-                image: formData.image || undefined,
-                dimensions: formData.dimensions.length > 0 &&
-                formData.dimensions.width > 0 &&
-                formData.dimensions.height > 0 ? {
-                    length: parseFloat(formData.dimensions.length.toString()),
-                    width: parseFloat(formData.dimensions.width.toString()),
-                    height: parseFloat(formData.dimensions.height.toString())
-                } : undefined
-            };
-
             // API call to create product
-            const response = await fetch('http://localhost:7000/api/v1/products', {
+            const response = await fetch('/api/products', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(productData),
+                body: JSON.stringify(formData),
             });
 
             if (response.ok) {
                 // Redirect back to inventory page on success
                 navigate('/inventory');
             } else {
-                const errorData = await response.json();
-                setError(errorData.message || 'Failed to create product');
+                console.error('Failed to create product');
             }
         } catch (error) {
             console.error('Error creating product:', error);
-            setError('An unexpected error occurred');
         } finally {
             setLoading(false);
         }
@@ -79,29 +47,9 @@ const AddProductPage: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-
-        if (name.startsWith('dimension.')) {
-            const dimensionField = name.split('.')[1];
-            setFormData(prev => ({
-                ...prev,
-                dimensions: {
-                    ...prev.dimensions,
-                    [dimensionField]: value
-                }
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: name.includes('price') ? Number(value) : value
-            }));
-        }
-    };
-
-    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: checked
+            [name]: name.includes('Price') || name.includes('Stock') ? Number(value) : value
         }));
     };
 
@@ -119,12 +67,6 @@ const AddProductPage: React.FC = () => {
             </div>
 
             <div className="card p-6">
-                {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        {error}
-                    </div>
-                )}
-
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="md:col-span-2">
                         <h3 className="text-xl font-semibold mb-4">Basic Information</h3>
@@ -166,94 +108,92 @@ const AddProductPage: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-dark-600 mb-1">Category *</label>
+                        <label className="block text-sm font-medium text-dark-600 mb-1">Category</label>
                         <select
                             name="category"
                             value={formData.category}
                             onChange={handleChange}
                             className="select w-full"
-                            required
                         >
                             <option value="">Select Category</option>
-                            <option value="Men's Clothing">Men's Clothing</option>
-                            <option value="Women's Clothing">Women's Clothing</option>
-                            <option value="Footwear">Footwear</option>
+                            <option value="Beverages">Beverages</option>
+                            <option value="Tableware">Tableware</option>
                             <option value="Accessories">Accessories</option>
-                            <option value="Loungewear">Loungewear</option>
+                            <option value="Food">Food</option>
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-dark-600 mb-1">Price ($) *</label>
-                        <input
-                            type="number"
-                            name="price"
-                            value={formData.price}
+                        <label className="block text-sm font-medium text-dark-600 mb-1">Unit of Measurement</label>
+                        <select
+                            name="uom"
+                            value={formData.uom}
                             onChange={handleChange}
-                            className="input w-full"
-                            min="0"
-                            step="0.01"
-                            required
-                        />
+                            className="select w-full"
+                        >
+                            <option value="pcs">Pieces</option>
+                            <option value="kg">Kilograms</option>
+                            <option value="g">Grams</option>
+                            <option value="ml">Milliliters</option>
+                            <option value="l">Liters</option>
+                        </select>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-dark-600 mb-1">Image URL</label>
+                        <label className="block text-sm font-medium text-dark-600 mb-1">Initial Stock</label>
                         <input
-                            type="url"
-                            name="image"
-                            value={formData.image}
+                            type="number"
+                            name="initialStock"
+                            value={formData.initialStock}
                             onChange={handleChange}
                             className="input w-full"
-                            placeholder="https://example.com/image.jpg"
+                            min="0"
                         />
                     </div>
 
                     <div className="md:col-span-2">
-                        <h3 className="text-xl font-semibold mb-4 mt-6">Dimensions (Optional)</h3>
+                        <h3 className="text-xl font-semibold mb-4 mt-6">Pricing</h3>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-dark-600 mb-1">Length (cm)</label>
+                        <label className="block text-sm font-medium text-dark-600 mb-1">Cost Price ($)</label>
                         <input
                             type="number"
-                            name="dimension.length"
-                            value={formData.dimensions.length}
+                            name="costPrice"
+                            value={formData.costPrice}
                             onChange={handleChange}
                             className="input w-full"
                             min="0"
-                            step="0.1"
+                            step="0.01"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-dark-600 mb-1">Width (cm)</label>
+                        <label className="block text-sm font-medium text-dark-600 mb-1">Selling Price ($)</label>
                         <input
                             type="number"
-                            name="dimension.width"
-                            value={formData.dimensions.width}
+                            name="sellingPrice"
+                            value={formData.sellingPrice}
                             onChange={handleChange}
                             className="input w-full"
                             min="0"
-                            step="0.1"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-dark-600 mb-1">Height (cm)</label>
-                        <input
-                            type="number"
-                            name="dimension.height"
-                            value={formData.dimensions.height}
-                            onChange={handleChange}
-                            className="input w-full"
-                            min="0"
-                            step="0.1"
+                            step="0.01"
                         />
                     </div>
 
                     <div className="md:col-span-2">
                         <h3 className="text-xl font-semibold mb-4 mt-6">Additional Information</h3>
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-dark-600 mb-1">Supplier</label>
+                        <input
+                            type="text"
+                            name="supplier"
+                            value={formData.supplier}
+                            onChange={handleChange}
+                            className="input w-full"
+                        />
                     </div>
 
                     <div className="md:col-span-2">
@@ -264,21 +204,7 @@ const AddProductPage: React.FC = () => {
                             onChange={handleChange}
                             className="input w-full"
                             rows={3}
-                            placeholder="Product description..."
                         />
-                    </div>
-
-                    <div className="md:col-span-2">
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
-                                name="isActive"
-                                checked={formData.isActive}
-                                onChange={handleCheckboxChange}
-                                className="mr-2"
-                            />
-                            <span className="text-sm font-medium text-dark-600">Active Product</span>
-                        </label>
                     </div>
 
                     <div className="md:col-span-2 flex justify-end space-x-4 mt-6">
@@ -286,7 +212,6 @@ const AddProductPage: React.FC = () => {
                             type="button"
                             onClick={() => navigate('/inventory')}
                             className="btn-outline"
-                            disabled={loading}
                         >
                             Cancel
                         </button>

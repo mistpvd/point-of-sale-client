@@ -1,15 +1,550 @@
+@import url("https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
+
+@plugin "tailwindcss-animate";
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    --font-sans: "Mona Sans", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    /* Blue Primary Color Palette */
+    --color-primary-50: #f0f5ff;
+    --color-primary-100: #dbe8ff;
+    --color-primary-200: #b8d1ff;
+    --color-primary-300: #8ab3ff;
+    --color-primary-400: #5c94ff;
+    --color-primary-500: #2e76ff;
+    --color-primary-600: #0058e6;
+    --color-primary-700: #0044b8;
+    --color-primary-800: #00308a;
+
+    /* Purple Secondary Color Palette */
+    --color-secondary-50: #f5f0ff;
+    --color-secondary-100: #e6d9ff;
+    --color-secondary-200: #d0b5ff;
+    --color-secondary-300: #b58cff;
+    --color-secondary-400: #9a63ff;
+    --color-secondary-500: #7f3aff;
+    --color-secondary-600: #6617e6;
+    --color-secondary-700: #4e00b8;
+
+    /* UI Colors */
+    --color-dark-100: #f8fafc;
+    --color-dark-200: #e2e8f0;
+    --color-dark-300: #94a3b8;
+    --color-dark-400: #64748b;
+    --color-dark-500: #475569;
+    --color-dark-600: #334155;
+    --color-dark-700: #1e293b;
+
+    /* Status Colors */
+    --color-success-100: #dcfce7;
+    --color-success-500: #22c55e;
+    --color-warning-100: #fef9c3;
+    --color-warning-500: #eab308;
+    --color-danger-100: #fee2e2;
+    --color-danger-500: #ef4444;
+
+    /* Special Colors */
+    --color-light-blue-100: #e0f2fe;
+    --color-light-purple-100: #f3e8ff;
 }
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
+/* Base Styles */
+html, body {
+    @apply bg-white font-sans text-dark-700;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+/* Typography */
+h1 {
+    @apply text-4xl font-bold tracking-tight;
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+h2 {
+    @apply text-2xl font-semibold text-dark-700;
+}
+
+h3 {
+    @apply text-xl font-medium text-dark-600;
+}
+
+/* Buttons */
+.btn-primary {
+    @apply px-6 py-3 rounded-lg font-medium text-white;
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-primary-600));
+    transition: all 0.2s;
+
+    &:hover {
+        background: linear-gradient(to right, var(--color-primary-600), var(--color-primary-700));
+        transform: translateY(-1px);
+    }
+}
+
+.btn-secondary {
+    @apply px-6 py-3 rounded-lg font-medium text-white;
+    background: linear-gradient(to right, var(--color-secondary-500), var(--color-secondary-600));
+
+    &:hover {
+        background: linear-gradient(to right, var(--color-secondary-600), var(--color-secondary-700));
+    }
+}
+
+.btn-outline {
+    @apply px-6 py-3 rounded-lg font-medium border-2;
+    border-color: var(--color-primary-500);
+    color: var(--color-primary-500);
+
+    &:hover {
+        @apply bg-primary-50;
+    }
+}
+
+/*Header*/
+.navbar{
+    background-color: var( --color-secondary-400);
+}
+
+/* Cards */
+.card {
+    @apply rounded-xl shadow-sm border border-dark-200 bg-white;
+}
+
+.card-header {
+    @apply p-4 border-b border-dark-200;
+    background: linear-gradient(to right, var(--color-primary-50), var(--color-secondary-50));
+}
+
+/* Forms */
+.input {
+    @apply p-3 border border-dark-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300;
+}
+
+.select {
+    @apply p-3 border border-dark-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white;
+}
+
+/* POS Specific Components */
+.pos-container {
+    @apply bg-dark-100 min-h-screen;
+}
+
+.pos-header {
+    @apply bg-white shadow-sm p-4 flex items-center justify-between;
+}
+
+.pos-sidebar {
+    @apply bg-white shadow-sm w-64 p-4;
+    background: linear-gradient(to bottom, var(--color-primary-50), white);
+}
+
+.pos-product-card {
+    @apply rounded-lg shadow-sm border border-dark-200 bg-white hover:shadow-md transition-all cursor-pointer;
+
+    &:hover {
+        border-color: var(--color-primary-300);
+    }
+}
+
+.pos-cart-item {
+    @apply border-b border-dark-200 py-3 px-2 hover:bg-dark-100;
+}
+
+.pos-total-display {
+    @apply p-4 rounded-lg font-bold text-lg;
+    background: linear-gradient(to right, var(--color-primary-100), var(--color-secondary-100));
+}
+
+/* Status Badges */
+.badge-success {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+    background-color: var(--color-success-100);
+    color: var(--color-success-500);
+}
+
+.badge-warning {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+    background-color: var(--color-warning-100);
+    color: var(--color-warning-500);
+}
+
+.badge-danger {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+    background-color: var(--color-danger-100);
+    color: var(--color-danger-500);
+}
+
+/* Utility Classes */
+.bg-gradient-primary {
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500));
+}
+
+.text-gradient-primary {
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.border-gradient {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+    linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500)) border-box;
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/*##Login Page#################Login Page###############Login Page##################Login Page#*/
+
+.pos-auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-secondary-100) 100%);
+    padding: 20px;
+    font-family: var(--font-sans);
+}
+
+.pos-auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 440px;
+}
+
+.pos-auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.pos-auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-secondary-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.pos-auth-subtitle {
+    color: var(--color-dark-400);
+    margin: 0;
+    font-size: 16px;
+}
+
+.pos-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--color-dark-600);
+    font-size: 14px;
+}
+
+.form-input {
+    padding: 14px 16px;
+    border: 1px solid var(--color-dark-200);
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.error-message {
+    color: var(--color-danger-500);
+    font-size: 14px;
+    margin: 4px 0 0;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--color-dark-500);
+    position: relative;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    height: 18px;
+    width: 18px;
+    background-color: white;
+    border: 1px solid var(--color-dark-300);
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.forgot-password {
+    color: var(--color-primary-500);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.forgot-password:hover {
+    color: var(--color-primary-700);
+}
+
+.auth-button {
+    background: linear-gradient(to right, var(--color-primary-500), var(--color-primary-600));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.auth-button:hover:not(:disabled) {
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-primary-700));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 118, 255, 0.3);
+}
+
+.auth-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.auth-button.loading {
+    background: linear-gradient(to right, var(--color-primary-400), var(--color-primary-500));
+}
+
+.button-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-dark-200);
+    color: var(--color-dark-400);
+    font-size: 14px;
+}
+
+.auth-toggle {
+    background: none;
+    border: none;
+    color: var(--color-secondary-500);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.auth-toggle:hover {
+    color: var(--color-secondary-700);
+}
+
+/*##Login Page#################Login Page###############Login Page##################Login Page#*/
+
+@theme inline {
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+    --radius: 0.625rem;
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
 }
